@@ -40,12 +40,25 @@ class BlockContent extends React.Component {
 
   get html() {
     const {fieldId, blockDefinition, blockId} = this.props;
+    if(blockDefinition.reactComponent && blockDefinition.reactComponent.block_type == 'BlockContent' && !this.props.custom) {
+      const Component = window.reactStreamFieldComponentMapping[blockDefinition.reactComponent.name]
+      return <Component sortable={false} collapsible={false} fieldId={fieldId} blockId={blockId}
+                        blockDefinition={blockDefinition} {...(blockDefinition.reactComponent.props || {})} />
+    }
     if (isStruct(blockDefinition)) {
-      const blocksContainer = blockDefinition.children.map(
-        childBlockDefinition =>
-          <StructChildField key={childBlockDefinition.key} fieldId={fieldId}
-                            parentBlockId={blockId}
-                            type={childBlockDefinition.key}/>
+      const blocksContainer = blockDefinition.children.filter(childBlockDefinition => !childBlockDefinition.hidden).map(
+        childBlockDefinition => {
+          if(childBlockDefinition.reactComponent && childBlockDefinition.reactComponent.block_type == 'StructChildField') {
+            const Component = window.reactStreamFieldComponentMapping[childBlockDefinition.reactComponent.name]
+            return <Component key={childBlockDefinition.key} fieldId={fieldId}
+                              parentBlockId={blockId}
+                              type={childBlockDefinition.key}
+                              {...(childBlockDefinition.reactComponent.props || {})} />
+          }
+          return <StructChildField key={childBlockDefinition.key} fieldId={fieldId}
+                                   parentBlockId={blockId}
+                                   type={childBlockDefinition.key}/>
+        }
       );
       let html = this.props.html;
       if (isNA(html)) {
@@ -74,6 +87,7 @@ class BlockContent extends React.Component {
         <AnimateHeight height={this.height} easing="ease-in-out"
                        className="c-sf-block__content"
                        contentClassName={className}>
+          {blockDefinition.show_uuid && <p>UUID: {this.props.blockId}</p>}
           {content}
         </AnimateHeight>
       );
@@ -81,6 +95,7 @@ class BlockContent extends React.Component {
     return (
       <div className="c-sf-block__content">
         <div className={className}>
+          {blockDefinition.show_uuid && <p>UUID: {this.props.blockId}</p>}
           {content}
         </div>
       </div>

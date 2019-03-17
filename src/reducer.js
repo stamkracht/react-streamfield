@@ -110,6 +110,18 @@ export default (state=initialState, action) => {
     case 'DELETE_BLOCK': {
       return deleteBlock(state, action.fieldId, action.blockId);
     }
+    case 'UPDATE_BLOCKS': {
+      return {
+        ...state,
+        [action.fieldId]: {
+          ...state[action.fieldId],
+          blocks: {
+            ...state[action.fieldId]['blocks'],
+            ...action.blocks
+          }
+        }
+      }
+    }
     default: {
       return state;
     }

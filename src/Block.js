@@ -35,6 +35,7 @@ import BlockActions from './BlockActions';
     blockDefinition,
     layout: getLayout(blockDefinition, fieldData.isMobile),
     isSimpleLayout: isSimpleLayout(blockDefinition, fieldData.isMobile),
+    standalone: props.standalone || blockDefinition.standalone,
     parentId: block.parent,
     hasError: hasDescendantError,
     closed: block.closed,
@@ -165,7 +166,7 @@ class Block extends React.Component {
     } = this.props;
     const blockContent = (
       <BlockContent ref={this.contentRef} fieldId={fieldId} blockId={id}
-                    collapsible={collapsible} />
+                    collapsible={!standalone && collapsible} />
     );
     if (standalone) {
       return (

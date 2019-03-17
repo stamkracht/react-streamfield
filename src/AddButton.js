@@ -69,7 +69,7 @@ class AddButton extends React.Component {
     event.stopPropagation();
     if (this.hasChoice) {
       this.setState((state, props) => ({open: !state.open}));
-    } else {
+    } else if(this.props.visible) {
       this.props.addBlock(this.props.index,
                           this.props.blockDefinitions[0].key);
     }

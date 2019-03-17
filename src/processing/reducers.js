@@ -144,6 +144,8 @@ export const cloneBlock = (state, fieldId, parentId, blockId) => {
       newBlocks = {...newBlocks, ...newChildrenBlocks};
     }
     value = newValue;
+  } else if (blockDefinition.doNotClone) {
+    value = '';
   }
   newBlock.value = value;
   return [newBlockId, newBlocks];
