@@ -36,6 +36,11 @@ class FieldInput extends React.Component {
 
   render() {
     const {fieldId, blockDefinition, blockId, value} = this.props;
+    if(blockDefinition.reactComponent && blockDefinition.reactComponent.block_type == 'FieldInput' && !this.props.custom) {
+      const Component = window.reactStreamFieldComponentMapping[blockDefinition.reactComponent.name]
+      return <Component fieldId={fieldId} blockId={blockId}
+                        blockDefinition={blockDefinition} {...(blockDefinition.reactComponent.props || {})} />
+    }
     if (isStruct(blockDefinition)) {  // Nested StructBlock
       return (
         <Block fieldId={fieldId} id={blockId}
